@@ -15,6 +15,7 @@ namespace SimpleGCS4MAVLink
         public GCS4MAVLink()
         {
             InitializeComponent();
+            // 这是一个测试!!!
         }
     }
 }
