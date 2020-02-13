@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Ports;
 
 namespace SimpleGCS4MAVLink
 {
@@ -23,7 +18,7 @@ namespace SimpleGCS4MAVLink
             serialPort.ReadTimeout = 2000;
         }
 
-        public void Close()
+        public void CloseConnection()
         {
             serialPort.Close();
         }

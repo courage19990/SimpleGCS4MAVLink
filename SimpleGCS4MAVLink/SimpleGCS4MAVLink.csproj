@@ -62,6 +62,7 @@
     <Compile Include="Entrance.Designer.cs">
       <DependentUpon>Entrance.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCS4MAVLink.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Entrance.resx">
