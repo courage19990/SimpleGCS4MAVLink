@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace SimpleGCS4MAVLink
 {
+    // 作为地面站程序的入口
     public partial class Entrance : Form
     {
         private GCS4MAVLink gcs = new GCS4MAVLink();
