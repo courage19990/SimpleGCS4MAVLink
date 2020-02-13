@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BCD223A5-1AEE-439A-B66C-0F1586217A07}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>SimpleGCS4MAVLink</RootNamespace>
     <AssemblyName>SimpleGCS4MAVLink</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -32,7 +32,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\simple_example_copy\SimpleExample\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MAVLink">
+      <HintPath>..\..\simple_example_copy\MAVLink.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,16 +55,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GCS4MAVLink.cs">
+    <Compile Include="Autopilot.cs" />
+    <Compile Include="Entrance.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GCS4MAVLink.Designer.cs">
-      <DependentUpon>GCS4MAVLink.cs</DependentUpon>
+    <Compile Include="Entrance.Designer.cs">
+      <DependentUpon>Entrance.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GCS4MAVLink.resx">
-      <DependentUpon>GCS4MAVLink.cs</DependentUpon>
+    <EmbeddedResource Include="Entrance.resx">
+      <DependentUpon>Entrance.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

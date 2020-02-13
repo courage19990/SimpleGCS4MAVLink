@@ -16,7 +16,7 @@ namespace SimpleGCS4MAVLink
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GCS4MAVLink());
+            Application.Run(new Entrance());
         }
     }
 }
