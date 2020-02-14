@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace SimpleGCS4MAVLink
 {
@@ -52,8 +53,7 @@ namespace SimpleGCS4MAVLink
             return autopilot.IsConnected();
         }
 
-        // 该线程的工作为：接收消息并传递给回调函数，返回心跳包
-        private void Jobs(object sender, DoWorkEventArgs e)
+        private void Jobs(object sender, DoWorkEventArgs args)
         {
             while (autopilot.IsConnected())
             {
@@ -76,11 +76,11 @@ namespace SimpleGCS4MAVLink
                         sysid = packet.sysid;
                         compid = packet.compid;
 
-                        // request streams at 2 hz
+                        // request streams at 2 hz 后改为7，调太多更流畅但电脑会卡
                         var buffer = mavlink.GenerateMAVLinkPacket10(MAVLink.MAVLINK_MSG_ID.REQUEST_DATA_STREAM,
                             new MAVLink.mavlink_request_data_stream_t()
                             {
-                                req_message_rate = 2,
+                                req_message_rate = 7,
                                 req_stream_id = (byte)MAVLink.MAV_DATA_STREAM.ALL,
                                 start_stop = 1,
                                 target_component = compid,
@@ -100,8 +100,9 @@ namespace SimpleGCS4MAVLink
 
                     messageHandler(packet);
                 }
-                catch
+                catch (Exception e)
                 {
+                    Console.WriteLine("Exception caught: {0}", e);
                     // try catch是必要的，否则会因为抛出无关紧要的异常而结束线程。
                 } 
 

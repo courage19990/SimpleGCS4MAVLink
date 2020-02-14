@@ -5,7 +5,7 @@ namespace SimpleGCS4MAVLink
     // 采用MAVLink作为通信协议的飞控
     class Autopilot
     {
-        // 本质是作为serialPort的代理人
+        // 本质是serialPort的代理人
         private SerialPort serialPort = new SerialPort();
         // 飞控和GCS具有完全一致的MAVLink数据结构
         private MAVLink.MavlinkParse mavlink = new MAVLink.MavlinkParse();

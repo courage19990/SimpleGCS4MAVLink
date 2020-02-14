@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="custom.js"></script>	
+		<script src="js/jquery-1.11.3.min.js"></script>	
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<span class="data"></span>
+		<svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
+		<script src="js/minified.js"></script>
+		<script src="js/snap.svg-min.js"></script>
+		<script src="js/Pi2D2.js"></script>
+
+		<script>
+			$(document).ready(() => {
+				let item_name = qE(".data");	
+				
+				let socket = new WebSocket('ws://localhost:8080');
+				Pi2D2.init();
+				
+				let ipg = {
+					init: function() {
+						item_name.innerHTML = "空空如也";
+					},	
+					update_artificial_horizon: function(att) {
+					   	Pi2D2.roll(att.roll  * 57.2958);
+					   	Pi2D2.pitch(att.pitch  * 57.2958);	
+					   	Pi2D2.compass(att.yaw  * 57.2958);
+					   	// Pi2D2.altimeter(29.92);
+					   	// Pi2D2.speed(123);					   
+					   	// Pi2D2.headingBug(  12);
+					   	// Pi2D2.vertspeed( 300 );
+					   	// Pi2D2.gmeter( -1 );						
+					},
+				};
+							
+							
+				ipg.init();
+								
+				let packet = null;
+				socket.onmessage = function(event) {
+					packet = JSON.parse(event.data);
+					if (packet == null || packet.data == null) return;
+					if (packet.msgid == 30) {
+						ipg.update_artificial_horizon(packet.data);
+					}
+				}
+			});			
+		</script>
+	</body>
+</html>
