@@ -1,54 +1,85 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
 		<title></title>
-		<script src="custom.js"></script>	
-		<script src="js/jquery-1.11.3.min.js"></script>	
+		<script src="custom.js"></script>
+		<script src="js/jquery-1.11.3.min.js"></script>
+		<!--地图-->
+		<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+		<script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值"></script>
+		<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+		<!--飞行姿态-->
 		<link rel="stylesheet" href="css/style.css" />
+		<style type="text/css">
+			html,
+			body,
+			#container {
+				width: 100%;
+				height: 100%;
+			}
+			
+			svg {
+				z-index: 1;
+			}
+		</style>
 	</head>
+
 	<body>
-		<span class="data"></span>
+
 		<svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
+
+		<div id="container"></div>
+
 		<script src="js/minified.js"></script>
 		<script src="js/snap.svg-min.js"></script>
 		<script src="js/Pi2D2.js"></script>
 
 		<script>
+			let map = new AMap.Map('container', {
+				resizeEnable: false,
+				zoom: 99,
+				center: [119.2101352397, 26.0270374542],
+				zoom: 18,
+				pitch: 50,
+				viewMode: '3D',
+			});
+
 			$(document).ready(() => {
-				let item_name = qE(".data");	
-				
-				let socket = new WebSocket('ws://localhost:8080');
+
 				Pi2D2.init();
-				
+
+				let socket = new WebSocket('ws://localhost:8080');
+
 				let ipg = {
-					init: function() {
-						item_name.innerHTML = "空空如也";
-					},	
+					init: function() {},
 					update_artificial_horizon: function(att) {
-					   	Pi2D2.roll(att.roll  * 57.2958);
-					   	Pi2D2.pitch(att.pitch  * 57.2958);	
-					   	Pi2D2.compass(att.yaw  * 57.2958);
-					   	// Pi2D2.altimeter(29.92);
-					   	// Pi2D2.speed(123);					   
-					   	// Pi2D2.headingBug(  12);
-					   	// Pi2D2.vertspeed( 300 );
-					   	// Pi2D2.gmeter( -1 );						
+						Pi2D2.roll(att.roll * 57.2958);
+						Pi2D2.pitch(att.pitch * 57.2958);
+						Pi2D2.compass(att.yaw * 57.2958);
+						// Pi2D2.altimeter(29.92);
+						// Pi2D2.speed(123);					   
+						// Pi2D2.headingBug(  12);
+						// Pi2D2.vertspeed( 300 );
+						// Pi2D2.gmeter( -1 );						
 					},
 				};
-							
-							
+
 				ipg.init();
-								
+
 				let packet = null;
 				socket.onmessage = function(event) {
 					packet = JSON.parse(event.data);
-					if (packet == null || packet.data == null) return;
-					if (packet.msgid == 30) {
+					if(packet == null || packet.data == null) return;
+					if(packet.msgid == 30) {
 						ipg.update_artificial_horizon(packet.data);
 					}
 				}
-			});			
+			});
 		</script>
 	</body>
+
 </html>
