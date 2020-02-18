@@ -5,7 +5,7 @@
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-		<title></title>
+		<title>基于MAVLink的简易无人机地面站</title>
 		<script src="custom.js"></script>
 		<script src="js/jquery-1.11.3.min.js"></script>
 		<!--地图-->
@@ -14,48 +14,130 @@
 		<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
 		<!--飞行姿态-->
 		<link rel="stylesheet" href="css/style.css" />
+		<!-- 字体 -->
+		<link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC" rel="stylesheet">
 		<style type="text/css">
+			html {
+				font-family: 'Noto Serif SC', STFangSong, serif;
+			}
+			
 			html,
 			body,
-			#container {
+			main,
+			#map_container {
 				width: 100%;
 				height: 100%;
 			}
 			
 			svg {
 				z-index: 1;
+				border-radius: 5%;
+			}
+			
+			#data_board {
+				z-index: 1;
+                opacity: 0.5;
+                position: fixed;
+                right: 2%;
+                top: 2%;
+                width: 15em;
+                margin-top: 1em;
+                background-color: black;
+                padding: 1em;
+                border-radius: 0;
+                transition: 0.6s ease-in-out;
+                color: white;	
+                font-family: 'Noto Serif SC', STFangSong, serif;
+                font-size: 17px;			
+			}
+			
+			#data_board:hover {
+                color: white;
+                right: 2%;
+                top: 2%;
+                border-radius: 5%;
+                opacity: 1.3;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+                transition: 0.4s ease-in-out;				
 			}
 		</style>
 	</head>
 
 	<body>
+		<header></header>
 
-		<svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
-
-		<div id="container"></div>
-
+		<main>
+			<svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
+			<div id="map_container"></div>
+			<div id="data_board">
+				<div class="card-wrap">
+					<div class="card" data-no="0">
+						<span class="data_lable">高度（m）<span>
+						<span class="real_time_data">0<span>
+					</div>
+				</div>
+				
+				<div class="card-wrap">
+					<div class="card" data-no="0">
+						<span class="data_lable">地速（m/s）<span>
+						<span class="real_time_data">0<span>
+					</div>
+				</div>		
+				
+				<div class="card-wrap">
+					<div class="card" data-no="0">
+						<span class="data_lable">航点距离（m）<span>
+						<span class="real_time_data">0<span>
+					</div>
+				</div>		
+				<div class="card-wrap">
+					<div class="card" data-no="0">
+						<span class="data_lable">偏航（deg）<span>
+						<span class="real_time_data">0<span>
+					</div>
+				</div>	
+				<div class="card-wrap">
+					<div class="card" data-no="0">
+						<span class="data_lable">升降速度（m/s）<span>
+						<span class="real_time_data">0<span>
+					</div>
+				</div>	
+				<div class="card-wrap">
+					<div class="card" data-no="0">
+						<span class="data_lable">DistToMAV<span>
+						<span class="real_time_data">0<span>
+					</div>
+				</div>	
+			</div>			
+		</main>
+		
 		<script src="js/minified.js"></script>
 		<script src="js/snap.svg-min.js"></script>
 		<script src="js/Pi2D2.js"></script>
 
-		<script>
-			let map = new AMap.Map('container', {
+		<script>		
+			// todo 逐个组件进行精化 模块化
+			// 通过websocket接收来自后端数据			
+			let socket = new WebSocket('ws://localhost:8080');				
+			
+			// 初始化地图。			
+			let map = new AMap.Map('map_container', {
 				resizeEnable: false,
 				zoom: 99,
-				center: [119.2101352397, 26.0270374542],
+				center: [119.211301 - 0.0011, 26.021563],
 				zoom: 18,
-				pitch: 50,
+				pitch: 30,
 				viewMode: '3D',
 			});
 
 			$(document).ready(() => {
-
-				Pi2D2.init();
-
-				let socket = new WebSocket('ws://localhost:8080');
-
+				let spanCardText = document.querySelectorAll("span.real_time_data");
+				
 				let ipg = {
-					init: function() {},
+					init: function() {
+						// 初始化飞行姿态仪
+						Pi2D2.init();
+					},
 					update_artificial_horizon: function(att) {
 						Pi2D2.roll(att.roll * 57.2958);
 						Pi2D2.pitch(att.pitch * 57.2958);
@@ -66,6 +148,17 @@
 						// Pi2D2.vertspeed( 300 );
 						// Pi2D2.gmeter( -1 );						
 					},
+					update_map: function() {
+						
+					},
+					update_data_board: function(data) {
+						spanCardText[0].innerText = data.alt;
+						spanCardText[1].innerText = data.groundspeed;
+						spanCardText[2].innerText = '0';
+						spanCardText[3].innerText = data.heading;
+						spanCardText[4].innerText = data.climb;
+						spanCardText[5].innerText = '0';
+					},
 				};
 
 				ipg.init();
@@ -74,8 +167,15 @@
 				socket.onmessage = function(event) {
 					packet = JSON.parse(event.data);
 					if(packet == null || packet.data == null) return;
-					if(packet.msgid == 30) {
-						ipg.update_artificial_horizon(packet.data);
+					// console.log(packet.msgtypename + ":");					
+					// console.log(packet);
+					
+					if (packet.msgtypename == "ATTITUDE") {
+						ipg.update_artificial_horizon(packet.data);					
+					}
+					
+					if (packet.msgtypename == "VFR_HUD") {
+						ipg.update_data_board(packet.data)						
 					}
 				}
 			});
