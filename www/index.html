@@ -16,11 +16,7 @@
 		<link rel="stylesheet" href="css/style.css" />
 		<!-- 字体 -->
 		<link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC" rel="stylesheet">
-		<style type="text/css">
-			html {
-				font-family: 'Noto Serif SC', STFangSong, serif;
-			}
-			
+		<style type="text/css">			
 			html,
 			body,
 			main,
@@ -29,36 +25,90 @@
 				height: 100%;
 			}
 			
-			svg {
+			#Pi2D2_SVG {
 				z-index: 1;
-				border-radius: 5%;
+				opacity: 0.55;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+				border-radius: 3%;
+				transition: 0.6s ease-in-out;
 			}
-			
+
+			#Pi2D2_SVG:hover {
+                color: white;
+                opacity: 1.0;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+                transition: 0.4s ease-in-out;				
+			}
+						
 			#data_board {
+				/* 装饰性的 */
 				z-index: 1;
-                opacity: 0.5;
+                opacity: 0.6;
+                border-radius: 3%;
+                transition: 0.6s ease-in-out;
+                font-family: 'Noto Serif SC', STFangSong, serif;
+                font-size: 17px;                	               
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;	
+				         
+				/* 结构性的 */       
                 position: fixed;
                 right: 2%;
                 top: 2%;
-                width: 15em;
-                margin-top: 1em;
-                background-color: black;
+                
+                width: 18em;
+                height: 21em;
                 padding: 1em;
-                border-radius: 0;
-                transition: 0.6s ease-in-out;
-                color: white;	
-                font-family: 'Noto Serif SC', STFangSong, serif;
-                font-size: 17px;			
+                
+                
+                				
+				/*对子元素开启弹性布局*/
+				display: flex;
+				/*弹性元素在必要的时候换行*/
+				flex-wrap: wrap;
+				/*将弹性元素居中*/
+				justify-content: center;
 			}
 			
-			#data_board:hover {
-                color: white;
-                right: 2%;
-                top: 2%;
-                border-radius: 5%;
-                opacity: 1.3;
+			#data_board:hover {     
+				/* 装饰性的 */        
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-                transition: 0.4s ease-in-out;				
+                transition: 0.4s ease-in-out;	
+                background-color: yellow;			
+			}
+			
+			div.card-wrap {
+				padding: 2px;
+				margin: 2px;
+				width: 130px;
+				height: 100px;
+				border-radius: 10px;
+				font-size: 15px;
+	
+				max-height: 100px;
+			}		
+			
+			div.data_lable {
+				/*border: dashed;*/
+				color: #004cff;
+			}		
+			
+			div.real_time_data {
+				padding-top: 0.3em;
+				padding-bottom: 0.3em;
+				padding-left: 0.318em;
+				
+				font-size: 30px;
+				color: red;
 			}
 		</style>
 	</head>
@@ -72,40 +122,40 @@
 			<div id="data_board">
 				<div class="card-wrap">
 					<div class="card" data-no="0">
-						<span class="data_lable">高度（m）<span>
-						<span class="real_time_data">0<span>
+						<div class="data_lable">高度（m）</div>
+						<div class="real_time_data">NONE</div>
 					</div>
 				</div>
 				
 				<div class="card-wrap">
 					<div class="card" data-no="0">
-						<span class="data_lable">地速（m/s）<span>
-						<span class="real_time_data">0<span>
+						<div class="data_lable">地速（m/s）</div>
+						<div class="real_time_data">NONE</div>
 					</div>
 				</div>		
 				
 				<div class="card-wrap">
 					<div class="card" data-no="0">
-						<span class="data_lable">航点距离（m）<span>
-						<span class="real_time_data">0<span>
+						<div class="data_lable">航点距离（m）</div>
+						<div class="real_time_data">NONE</div>
 					</div>
 				</div>		
 				<div class="card-wrap">
 					<div class="card" data-no="0">
-						<span class="data_lable">偏航（deg）<span>
-						<span class="real_time_data">0<span>
+						<div class="data_lable">偏航（deg）</div>
+						<div class="real_time_data">NONE</div>
 					</div>
 				</div>	
 				<div class="card-wrap">
 					<div class="card" data-no="0">
-						<span class="data_lable">升降速度（m/s）<span>
-						<span class="real_time_data">0<span>
+						<div class="data_lable">升降速度（m/s）</div>
+						<div class="real_time_data">NONE</div>
 					</div>
 				</div>	
 				<div class="card-wrap">
 					<div class="card" data-no="0">
-						<span class="data_lable">DistToMAV<span>
-						<span class="real_time_data">0<span>
+						<div class="data_lable">DistToMAV</div>
+						<div class="real_time_data">NONE</div>
 					</div>
 				</div>	
 			</div>			
@@ -131,33 +181,29 @@
 			});
 
 			$(document).ready(() => {
-				let spanCardText = document.querySelectorAll("span.real_time_data");
+				let divCardText = document.querySelectorAll("div.real_time_data");
 				
 				let ipg = {
 					init: function() {
-						// 初始化飞行姿态仪
 						Pi2D2.init();
 					},
 					update_artificial_horizon: function(att) {
 						Pi2D2.roll(att.roll * 57.2958);
 						Pi2D2.pitch(att.pitch * 57.2958);
-						Pi2D2.compass(att.yaw * 57.2958);
-						// Pi2D2.altimeter(29.92);
-						// Pi2D2.speed(123);					   
-						// Pi2D2.headingBug(  12);
-						// Pi2D2.vertspeed( 300 );
-						// Pi2D2.gmeter( -1 );						
+						Pi2D2.compass(att.yaw * 57.2958);					
 					},
 					update_map: function() {
 						
 					},
-					update_data_board: function(data) {
-						spanCardText[0].innerText = data.alt;
-						spanCardText[1].innerText = data.groundspeed;
-						spanCardText[2].innerText = '0';
-						spanCardText[3].innerText = data.heading;
-						spanCardText[4].innerText = data.climb;
-						spanCardText[5].innerText = '0';
+					update_data_board: function(data) {						
+						divCardText[0].innerText = (data.alt).toFixed(4);
+						divCardText[1].innerText = (data.groundspeed).toFixed(4);
+						divCardText[2].innerText = '0';
+						divCardText[3].innerText = data.heading;
+						divCardText[4].innerText = (data.climb).toFixed(4);
+						divCardText[5].innerText = '0';
+						
+						Pi2D2.altimeter((data.alt).toFixed(2));
 					},
 				};
 
@@ -170,13 +216,15 @@
 					// console.log(packet.msgtypename + ":");					
 					// console.log(packet);
 					
+					if (packet.msgtypename == "VFR_HUD") {
+						ipg.update_data_board(packet.data)						
+					}
+					
 					if (packet.msgtypename == "ATTITUDE") {
 						ipg.update_artificial_horizon(packet.data);					
 					}
 					
-					if (packet.msgtypename == "VFR_HUD") {
-						ipg.update_data_board(packet.data)						
-					}
+
 				}
 			});
 		</script>
