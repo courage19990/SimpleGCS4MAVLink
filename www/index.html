@@ -7,10 +7,10 @@
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
 		<title>基于MAVLink的简易无人机地面站</title>
 		<script src="custom.js"></script>
-		<script src="js/jquery-1.11.3.min.js"></script>
+		<script src="js/jquery-1.11.3.min.js"></script>		
 		<!--地图-->
-		<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
-		<script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值"></script>
+		<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />		
+		<script src="https://webapi.amap.com/maps?v=1.4.15&key=ae47877881de27c56caf16dded487bc7" />
 		<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
 		<!--飞行姿态-->
 		<link rel="stylesheet" href="css/style.css" />
@@ -110,6 +110,17 @@
 				font-size: 30px;
 				color: red;
 			}
+			
+			.amap-toolbar {
+				display: none;
+			}
+			
+			.amap-icon img,
+        	.amap-marker-content img {
+            	width: 25px;
+            	height: 34px;	
+            }
+
 		</style>
 	</head>
 
@@ -117,6 +128,8 @@
 		<header></header>
 
 		<main>
+			
+			<div id="my_uav"></div>
 			<svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
 			<div id="map_container"></div>
 			<div id="data_board">
@@ -166,23 +179,38 @@
 		<script src="js/Pi2D2.js"></script>
 
 		<script>		
-			// todo 逐个组件进行精化 模块化
 			// 通过websocket接收来自后端数据			
-			let socket = new WebSocket('ws://localhost:8080');				
-			
-			// 初始化地图。			
+			let socket = new WebSocket('ws://localhost:8080');						
+			let default_lon = 119.211276; // 东经
+			let default_lat = 26.021574; // 北纬
 			let map = new AMap.Map('map_container', {
 				resizeEnable: false,
 				zoom: 99,
-				center: [119.211301 - 0.0011, 26.021563],
+				center: [default_lon, default_lat],
 				zoom: 18,
 				pitch: 30,
 				viewMode: '3D',
-			});
-
+			});			
+				
+			let my_uav = new AMap.Marker({
+            	icon: "http://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png",
+            	position: [default_lon, default_lat],
+	          	offset: new AMap.Pixel(-13, -30),
+        	});
+			my_uav.setMap(map);
+			
+			function uav_move_test() {
+				let x = default_lon;
+				setInterval(() => {
+					x += 0.000001;
+					my_uav.setPosition([x, default_lat]);
+				}, 1000 / 30);
+			}
+			// uav_move_test();
+			
 			$(document).ready(() => {
 				let divCardText = document.querySelectorAll("div.real_time_data");
-				
+		
 				let ipg = {
 					init: function() {
 						Pi2D2.init();
@@ -214,8 +242,7 @@
 					packet = JSON.parse(event.data);
 					if(packet == null || packet.data == null) return;
 					// console.log(packet.msgtypename + ":");					
-					// console.log(packet);
-					
+					// console.log(packet);					
 					if (packet.msgtypename == "VFR_HUD") {
 						ipg.update_data_board(packet.data)						
 					}
@@ -224,7 +251,6 @@
 						ipg.update_artificial_horizon(packet.data);					
 					}
 					
-
 				}
 			});
 		</script>

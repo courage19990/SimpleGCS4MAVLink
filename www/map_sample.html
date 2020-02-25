@@ -1,52 +1,110 @@
-<!doctype html>
-<html lang="en" >
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<script type="text/javascript">
-</script>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <style type="text/css">
-      h3{
-        font-size: 1.17em;
-        line-height: 1.4;
-        font-weight: bold;
-        margin: 2px;
-      }
-      hr{
-        margin: 1px;
-      }
-      html,body{
-        width: 100%;
-        height: 100%;
-        margin: 0px;
-      }
-      .map{
-        height: 100%;
-        width: 100%;
-        float: left;
-      }
-   #mapDiv .amap-indoormap-floorbar-control{bottom:10%}
-    </style>
-    <title>室内地图</title>
-  </head>
-  <body>
-    <div id="mapDiv" class="map" tabindex="0"></div>
-    <script type="text/javascript" src='https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值&plugin=AMap.ToolBar'></script>
-    <script type="text/javascript">
-        var map = new AMap.Map('mapDiv', {
-              resizeEnable: true,
-              center:[119.2101352397, 26.0270374542],
-              zoom:18,
-              pitch:50,
-              viewMode:'3D'
-        });
-        map.on('indoor_create',function(){
-              map.indoorMap.showIndoorMap('B000A856LJ',5);
-        })
-    </script>
-<script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
-
-  </body>
-  
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>3D</title>
+        <style type="text/css">
+            html {
+                height: 100%;
+            }
+            body {
+                height: 100%;
+                /*取消body标签默认产生的外间距*/
+                margin: 0;
+                background-color: pin;
+                /*第一步：开启弹性布局,对子元素*/
+                display: flex;
+                /*第二步：设置水平方向居中 justify-content自适应*/
+                justify-content: center;
+                /*第三部：设置垂直居中*/
+                align-items: center;
+                
+                /*设置镜头与平面的距离*/
+                perspective: 3000px;
+                /*设置镜头在平面上的位置*/
+                /*perspective-origin: 0% 0%;*/
+                perspective-origin: right top;
+            }
+            /*定义section容器的大小颜色*/
+            section {
+                width: 300px;
+                height: 300px;                    
+                /*设置相对定位：目的让【子】元素设置【绝对】定位时可以【参照】*/
+                position: relative;                
+                /*开启3D样式*/
+                transform-style: preserve-3d;                
+                /*旋转*/
+                animation: xuanzhuan 6s infinite linear;
+            }
+            
+            @keyframes xuanzhuan {
+                /*旋转的时候z轴保持不变,x和y做360度旋转*/
+                from {
+                    transform: rotateX(0deg) rotateY(0deg);
+                }
+                to {
+                    transform: rotateX(360deg) rotateY(360deg);
+                }
+            }
+            
+            /*对每一个div统一设置样式*/
+            div {
+                width: 300px;
+                height: 300px;
+                border: 2px solid black;
+                /*将文本居中*/
+                /*水平*/
+                text-align: center;
+                /*设置行高*/
+                line-height: 300px;
+                /*设置文本格式*/
+                font-family: "agency fb";
+                font-size: 30px;
+                color: darkblue;
+                /*定位：每一个面【相对】大箱子设置【绝对】定位*/
+                position: absolute;
+                opacity: 0.7;
+                /*设置图片*/
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            .front {
+                background-image: url(../img2/1.jpg);
+                transform: translateZ(150px);
+            }
+            .back {
+                background-image: url(../img2/2.jpg);
+                transform: translateZ(-150px);
+            }
+            /*旋转的时候坐标轴也会跟着旋转*/
+            .left {
+                background-image: url(../img2/3.jpg);
+                transform: rotateY(90deg) translateZ(150px);
+            }
+            .right {
+                background-image: url(../img2/4.jpg);
+                transform: rotateY(90deg) translateZ(-150px);
+            }
+            .top {
+                background-image: url(../img2/5.png);
+                transform: rotateX(90deg) translateZ(150px);
+            }
+            .down {
+                background-image: url(../img2/6.jpg);
+                transform: rotateX(90deg) translateZ(-150px);
+            }
+        </style>
+    </head>
+    <body>
+        <!--第一步：定义一个大盒子来装六个面-->
+        <section>
+            <!--装六个面 前后左右上下-->
+            <div class="front"></div>
+            <div class="back"></div>
+            <div class="left"></div>
+            <div class="right"></div>
+            <div class="top"></div>
+            <div class="down"></div>
+        </section>
+    </body>
 </html>
