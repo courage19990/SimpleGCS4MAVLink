@@ -39,11 +39,8 @@
     <Reference Include="Fleck, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Fleck.1.1.0\lib\net45\Fleck.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\simple_example_copy\SimpleExample\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MAVLink">
-      <HintPath>..\..\simple_example_copy\MAVLink.dll</HintPath>
+    <Reference Include="MAVLink, Version=1.0.0.0, Culture=neutral, PublicKeyToken=38326cb7e06851fc, processorArchitecture=MSIL">
+      <HintPath>..\packages\MAVLink.1.0.5\lib\net461\MAVLink.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
