@@ -10,13 +10,13 @@ namespace SimpleGCS4MAVLink
     {
         private GCS4MAVLink gcs = new GCS4MAVLink();
 
+        // 将数据通过websocket发送到浏览器显示，目前采用的方案
+        private MyWebSocketServer server = new MyWebSocketServer("ws://127.0.0.1:8095");
+
         // 定义一个更新GUI的委托类，暂时弃用
         public delegate void UIUpdator(MAVLink.MAVLinkMessage packet);
         // 定义一个委托变量的引用，暂时弃用
         private UIUpdator updator;
-
-        // 将数据通过websocket发送到浏览器显示，目前采用的方案
-        private MyWebSocketServer server = new MyWebSocketServer("ws://127.0.0.1:8080");
 
         public Entrance()
         {
@@ -34,9 +34,11 @@ namespace SimpleGCS4MAVLink
             if (gcs.IsStartup())
             {
                 gcs.Shutdown();
+                Console.WriteLine("设备已断开。");
                 return;
-            }
+            }           
             gcs.Startup(cmbComport.Text, int.Parse(cmbBaudrate.Text), MessageHandler);
+            Console.WriteLine("设备已连接。");
         }
 
         // 该方法在GCS开启的子线程中执行

@@ -45,7 +45,7 @@
             "38400",
             "57600",
             "115200"});
-            this.cmbBaudrate.Location = new System.Drawing.Point(873, 18);
+            this.cmbBaudrate.Location = new System.Drawing.Point(256, 18);
             this.cmbBaudrate.Name = "cmbBaudrate";
             this.cmbBaudrate.Size = new System.Drawing.Size(121, 26);
             this.cmbBaudrate.TabIndex = 0;
@@ -54,7 +54,7 @@
             // 
             this.cmbComport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbComport.FormattingEnabled = true;
-            this.cmbComport.Location = new System.Drawing.Point(746, 18);
+            this.cmbComport.Location = new System.Drawing.Point(129, 18);
             this.cmbComport.Name = "cmbComport";
             this.cmbComport.Size = new System.Drawing.Size(121, 26);
             this.cmbComport.TabIndex = 1;
@@ -63,7 +63,7 @@
             // btnConnect
             // 
             this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConnect.Location = new System.Drawing.Point(1000, 12);
+            this.btnConnect.Location = new System.Drawing.Point(383, 12);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(123, 36);
             this.btnConnect.TabIndex = 2;
@@ -75,7 +75,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1135, 649);
+            this.ClientSize = new System.Drawing.Size(518, 86);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.cmbComport);
             this.Controls.Add(this.cmbBaudrate);

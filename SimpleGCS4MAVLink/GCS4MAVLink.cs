@@ -67,16 +67,17 @@ namespace SimpleGCS4MAVLink
                         if (packet == null || packet.data == null)
                             continue; // 如果是无效的packet则直接进入下一次循环
                     }
-                    // check to see if its a hb packet from the comport
+
+                    // 检查是否是来自端口的一个心跳包
                     if (packet.data.GetType() == typeof(MAVLink.mavlink_heartbeat_t))
                     {
                         var hb = (MAVLink.mavlink_heartbeat_t)packet.data;
 
-                        // save the sysid and compid of the seen MAV
+                        // 保留无人机的系统和组件ID
                         sysid = packet.sysid;
                         compid = packet.compid;
 
-                        // request streams at 2 hz 后改为7，调太多更流畅但电脑会卡
+                        // 创建请求数据流的MAVLINK消息包，这里令req_message_rate=7，调高些可以提高数据的实时性，但对硬件有更高要求
                         var buffer = mavlink.GenerateMAVLinkPacket10(MAVLink.MAVLINK_MSG_ID.REQUEST_DATA_STREAM,
                             new MAVLink.mavlink_request_data_stream_t()
                             {
@@ -86,11 +87,12 @@ namespace SimpleGCS4MAVLink
                                 target_component = compid,
                                 target_system = sysid
                             });
-
+                        // 向飞控发送请求数据流的MAVLINK消息包
                         autopilot.ReceiveBytes(buffer);
 
                         buffer = mavlink.GenerateMAVLinkPacket10(MAVLink.MAVLINK_MSG_ID.HEARTBEAT, hb);
 
+                        // 向飞控发送心跳包
                         autopilot.ReceiveBytes(buffer);
                     }
 
@@ -98,15 +100,15 @@ namespace SimpleGCS4MAVLink
                     if (sysid != packet.sysid || compid != packet.compid)
                         continue; // 不是就不处理
 
+                    // 将来自飞控的MAVLINK消息包转发给消息处理器进一步处理。
                     messageHandler(packet);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Console.WriteLine("Exception caught: {0}", e);
                     // try catch是必要的，否则会因为抛出无关紧要的异常而结束线程。
-                } 
-
-                System.Threading.Thread.Sleep(1); // 防止单个线程将CPU占满？
+                    // 偶尔抛出System.IO.IOException: 由于线程退出或应用程序请求，已中止 I/O 操作。
+                }
+                System.Threading.Thread.Sleep(1); // 防止单个线程将CPU占满。
             }
         }
     }
