@@ -6,7 +6,6 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
 		<title>基于MAVLink的简易无人机地面站</title>
-		<script src="custom.js"></script>
 		<script src="js/jquery-1.11.3.min.js"></script>		
 		<!--地图-->
 		<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />		
@@ -200,13 +199,17 @@
 			my_uav.setMap(map);
 			
 			function uav_move_test() {
+				// 用于测试实时更新无人机位置的效果
 				let x = default_lon;
 				setInterval(() => {
 					x += 0.000001;
-					my_uav.setPosition([x, default_lat]);
-				}, 1000 / 30);
+					my_uav.setPosition([x, default_lat]);					
+				}, 1000 / 20); // 移动代表无人机的标记
+				setInterval(() => {
+					map.panTo([x, default_lat]);				
+				}, 15 * 1000); // 每隔一定时间将地图锁定为以无人机为中心
 			}
-			// uav_move_test();
+			uav_move_test();
 			
 			$(document).ready(() => {
 				let divCardText = document.querySelectorAll("div.real_time_data");
