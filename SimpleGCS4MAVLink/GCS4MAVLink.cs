@@ -90,6 +90,7 @@ namespace SimpleGCS4MAVLink
                         // 向飞控发送请求数据流的MAVLINK消息包
                         autopilot.ReceiveBytes(buffer);
 
+                        // 创建心跳包
                         buffer = mavlink.GenerateMAVLinkPacket10(MAVLink.MAVLINK_MSG_ID.HEARTBEAT, hb);
 
                         // 向飞控发送心跳包
